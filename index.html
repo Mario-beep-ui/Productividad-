@@ -81,7 +81,12 @@
             font-weight: 700;
         }
 
-        .theme-toggle {
+        .header-controls {
+            display: flex;
+            gap: 15px;
+        }
+
+        .theme-toggle, .help-btn {
             background: var(--bg-secondary);
             border: none;
             width: 50px;
@@ -95,12 +100,12 @@
             transition: var(--transition);
         }
 
-        .theme-toggle i {
+        .theme-toggle i, .help-btn i {
             font-size: 1.5rem;
             color: var(--accent-color);
         }
 
-        .theme-toggle:hover {
+        .theme-toggle:hover, .help-btn:hover {
             transform: rotate(15deg);
         }
 
@@ -391,6 +396,130 @@
             transform: translateY(-2px);
         }
 
+        /* Modal de instrucciones */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            position: relative;
+            transform: translateY(50px);
+            opacity: 0;
+            transition: all 0.4s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--bg-tertiary);
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            color: var(--accent-color);
+            font-weight: 700;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            color: var(--accent-color);
+            transform: rotate(90deg);
+        }
+
+        .instructions-content {
+            line-height: 1.6;
+        }
+
+        .instruction-step {
+            display: flex;
+            margin-bottom: 20px;
+            background: var(--bg-tertiary);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .instruction-step:hover {
+            transform: translateX(5px);
+        }
+
+        .step-number {
+            background: var(--accent-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .step-text {
+            flex: 1;
+        }
+
+        .step-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--accent-color);
+        }
+
+        .step-description {
+            color: var(--text-secondary);
+        }
+
+        .modal-footer {
+            margin-top: 25px;
+            text-align: center;
+            padding-top: 15px;
+            border-top: 1px solid var(--bg-tertiary);
+            color: var(--text-secondary);
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .stats-grid {
@@ -413,6 +542,19 @@
             .actions {
                 flex-direction: column;
             }
+            
+            .modal-title {
+                font-size: 1.5rem;
+            }
+            
+            .instruction-step {
+                flex-direction: column;
+            }
+            
+            .step-number {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -429,6 +571,15 @@
             .dashboard {
                 grid-template-columns: 1fr;
             }
+            
+            .header-controls {
+                gap: 8px;
+            }
+            
+            .theme-toggle, .help-btn {
+                width: 40px;
+                height: 40px;
+            }
         }
     </style>
 </head>
@@ -439,9 +590,14 @@
                 <i class="fas fa-calculator"></i>
                 <h1>Productividad Cajeros</h1>
             </div>
-            <button class="theme-toggle" id="themeToggle">
-                <i class="fas fa-moon"></i>
-            </button>
+            <div class="header-controls">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button class="help-btn" id="helpBtn">
+                    <i class="fas fa-question"></i>
+                </button>
+            </div>
         </header>
         
         <div class="dashboard">
@@ -533,6 +689,64 @@
         </div>
     </div>
 
+    <!-- Modal de instrucciones -->
+    <div class="modal-overlay" id="instructionsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Instrucciones de Uso</h2>
+                <button class="close-modal" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="instructions-content">
+                <div class="instruction-step">
+                    <div class="step-number">1</div>
+                    <div class="step-text">
+                        <div class="step-title">Seleccionar Horas</div>
+                        <div class="step-description">En el panel de estadísticas, selecciona las horas que deseas monitorear usando el selector de hora y presiona "Agregar".</div>
+                    </div>
+                </div>
+                
+                <div class="instruction-step">
+                    <div class="step-number">2</div>
+                    <div class="step-text">
+                        <div class="step-title">Registrar Clientes</div>
+                        <div class="step-description">Cada vez que atiendas a un cliente, presiona el botón "Registrar" en el panel derecho. Solo se pueden registrar clientes en las horas seleccionadas.</div>
+                    </div>
+                </div>
+                
+                <div class="instruction-step">
+                    <div class="step-number">3</div>
+                    <div class="step-text">
+                        <div class="step-title">Monitorear Estadísticas</div>
+                        <div class="step-description">Observa las estadísticas en tiempo real: clientes totales, clientes en la hora actual y la hora pico de atención.</div>
+                    </div>
+                </div>
+                
+                <div class="instruction-step">
+                    <div class="step-number">4</div>
+                    <div class="step-text">
+                        <div class="step-title">Revisar Tabla de Productividad</div>
+                        <div class="step-description">La tabla muestra el detalle por cada hora seleccionada: cantidad de clientes, promedio por minuto y estado de productividad.</div>
+                    </div>
+                </div>
+                
+                <div class="instruction-step">
+                    <div class="step-number">5</div>
+                    <div class="step-text">
+                        <div class="step-title">Guardar y Reiniciar</div>
+                        <div class="step-description">Usa el botón "Guardar Datos" para preservar tu progreso. "Reiniciar" borrará todos los datos actuales.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <p>Presiona el botón de ayuda en cualquier momento para ver estas instrucciones</p>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Variables globales
         let clientsData = {};
@@ -553,6 +767,9 @@
         const hourTags = document.getElementById('hourTags');
         const saveDataBtn = document.getElementById('saveData');
         const resetDataBtn = document.getElementById('resetData');
+        const helpBtn = document.getElementById('helpBtn');
+        const closeModal = document.getElementById('closeModal');
+        const instructionsModal = document.getElementById('instructionsModal');
         
         // Inicialización
         document.addEventListener('DOMContentLoaded', () => {
@@ -563,7 +780,37 @@
             renderHourTags();
             renderHourTable();
             updateStats();
+            
+            // Event listeners para la modal
+            helpBtn.addEventListener('click', openModal);
+            closeModal.addEventListener('click', closeModalFunc);
+            
+            // Cerrar modal haciendo clic fuera del contenido
+            instructionsModal.addEventListener('click', (e) => {
+                if (e.target === instructionsModal) {
+                    closeModalFunc();
+                }
+            });
+            
+            // Cerrar modal con tecla Escape
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && instructionsModal.classList.contains('active')) {
+                    closeModalFunc();
+                }
+            });
         });
+        
+        // Abrir modal
+        function openModal() {
+            instructionsModal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Evitar scroll en el fondo
+        }
+        
+        // Cerrar modal
+        function closeModalFunc() {
+            instructionsModal.classList.remove('active');
+            document.body.style.overflow = 'auto'; // Restaurar scroll
+        }
         
         // Cambiar tema
         themeToggle.addEventListener('click', () => {
