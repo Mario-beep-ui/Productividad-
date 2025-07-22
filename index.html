@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productividad Cajeros</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --bg-tertiary: #0f3460;
+            --accent-color: #4cc9f0;
+            --accent-secondary: #3a86ff;
+            --text-primary: #e6e6e6;
+            --text-secondary: #b8b8b8;
+            --success: #4ade80;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --border-radius: 12px;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            --transition: all 0.3s ease;
+        }
+
+        .light-theme {
+            --bg-primary: #f0f2f5;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #e4e7eb;
+            --accent-color: #2563eb;
+            --accent-secondary: #3a86ff;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --success: #16a34a;
+            --warning: #ca8a04;
+            --danger: #dc2626;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            transition: var(--transition);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--bg-tertiary);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo i {
+            font-size: 28px;
+            color: var(--accent-color);
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .theme-toggle {
+            background: var(--bg-secondary);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .theme-toggle i {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(15deg);
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        @media (min-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .card {
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--bg-tertiary);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 10px 0;
+            color: var(--accent-color);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        .client-btn {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-secondary));
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(76, 201, 240, 0.4);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .client-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 30px rgba(76, 201, 240, 0.6);
+        }
+
+        .client-btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .btn-text {
+            font-size: 1.2rem;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-top: 30px;
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        thead {
+            background: var(--bg-tertiary);
+        }
+
+        th {
+            padding: 15px 20px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        td {
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--bg-tertiary);
+            color: var(--text-secondary);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: rgba(76, 201, 240, 0.1);
+            color: var(--text-primary);
+        }
+
+        .hour-cell {
+            font-weight: 600;
+            color: var(--accent-color);
+        }
+
+        .count-cell {
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 12px 25px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .save-btn {
+            background: var(--success);
+            color: white;
+        }
+
+        .reset-btn {
+            background: var(--danger);
+            color: white;
+        }
+
+        .action-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--bg-tertiary);
+        }
+
+        /* Animación de registro */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 0.4s ease;
+        }
+
+        /* Selector de horas */
+        .hour-selector {
+            margin-top: 20px;
+        }
+
+        .hour-selector-title {
+            margin-bottom: 15px;
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .hour-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .hour-tag {
+            background: var(--bg-tertiary);
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .hour-tag button {
+            background: none;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .hour-input-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .hour-input {
+            flex: 1;
+        }
+
+        .hour-input input {
+            width: 100%;
+            padding: 12px 15px;
+            background: var(--bg-tertiary);
+            border: none;
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .add-hour-btn {
+            padding: 12px 20px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .add-hour-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .client-btn {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .btn-icon {
+                font-size: 2.5rem;
+            }
+            
+            .logo h1 {
+                font-size: 1.5rem;
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .client-btn {
+                width: 130px;
+                height: 130px;
+                font-size: 1.2rem;
+            }
+            
+            .btn-icon {
+                font-size: 2rem;
+            }
+            
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-calculator"></i>
+                <h1>Productividad Cajeros</h1>
+            </div>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </header>
+        
+        <div class="dashboard">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Estadísticas</h2>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalClients">0</div>
+                        <div class="stat-label">Clientes Totales</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="currentHourClients">0</div>
+                        <div class="stat-label">Esta Hora</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="peakHourClients">0</div>
+                        <div class="stat-label">Hora Pico</div>
+                    </div>
+                </div>
+                
+                <div class="hour-selector">
+                    <div class="hour-selector-title">
+                        <h3>Horas de Productividad</h3>
+                        <p>Selecciona las horas que deseas monitorear</p>
+                    </div>
+                    <div class="hour-tags" id="hourTags">
+                        <!-- Las horas se agregarán dinámicamente -->
+                    </div>
+                    <div class="hour-input-container">
+                        <div class="hour-input">
+                            <input type="time" id="hourInput" step="3600">
+                        </div>
+                        <button class="add-hour-btn" id="addHourBtn">
+                            <i class="fas fa-plus"></i> Agregar
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Registrar Cliente</h2>
+                    <div id="currentTime">00:00:00</div>
+                </div>
+                <div class="btn-container">
+                    <button class="client-btn" id="clientButton">
+                        <i class="fas fa-user-plus btn-icon"></i>
+                        <span class="btn-text">Registrar</span>
+                    </button>
+                </div>
+                <div class="actions">
+                    <button class="action-btn save-btn" id="saveData">
+                        <i class="fas fa-save"></i>
+                        Guardar Datos
+                    </button>
+                    <button class="action-btn reset-btn" id="resetData">
+                        <i class="fas fa-trash-alt"></i>
+                        Reiniciar
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Registro por Hora</h2>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Hora</th>
+                            <th>Clientes Atendidos</th>
+                            <th>Promedio/Minuto</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="hourTable">
+                        <!-- Las filas se generarán con JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Registro de productividad para cajeros &copy; 2023</p>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let clientsData = {};
+        let totalClients = 0;
+        let isDarkTheme = true;
+        let selectedHours = []; // Horas seleccionadas para monitoreo
+        
+        // Elementos DOM
+        const themeToggle = document.getElementById('themeToggle');
+        const clientButton = document.getElementById('clientButton');
+        const totalClientsEl = document.getElementById('totalClients');
+        const currentHourClientsEl = document.getElementById('currentHourClients');
+        const peakHourClientsEl = document.getElementById('peakHourClients');
+        const hourTable = document.getElementById('hourTable');
+        const currentTimeEl = document.getElementById('currentTime');
+        const hourInput = document.getElementById('hourInput');
+        const addHourBtn = document.getElementById('addHourBtn');
+        const hourTags = document.getElementById('hourTags');
+        const saveDataBtn = document.getElementById('saveData');
+        const resetDataBtn = document.getElementById('resetData');
+        
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+            loadThemePreference();
+            loadSavedData();
+            updateCurrentTime();
+            setInterval(updateCurrentTime, 1000);
+            renderHourTags();
+            renderHourTable();
+            updateStats();
+        });
+        
+        // Cambiar tema
+        themeToggle.addEventListener('click', () => {
+            isDarkTheme = !isDarkTheme;
+            document.body.classList.toggle('light-theme', !isDarkTheme);
+            themeToggle.innerHTML = isDarkTheme ? 
+                '<i class="fas fa-moon"></i>' : 
+                '<i class="fas fa-sun"></i>';
+            localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
+        });
+        
+        // Registrar cliente
+        clientButton.addEventListener('click', () => {
+            const now = new Date();
+            const currentHour = now.getHours();
+            const hourKey = `${String(currentHour).padStart(2, '0')}:00`;
+            
+            // Verificar si la hora actual está seleccionada
+            if (!selectedHours.includes(hourKey)) {
+                showNotification("Esta hora no está seleccionada para monitoreo");
+                return;
+            }
+            
+            // Crear entrada si no existe
+            if (!clientsData[hourKey]) {
+                clientsData[hourKey] = {
+                    count: 0,
+                    timestamps: []
+                };
+            }
+            
+            // Incrementar contadores
+            clientsData[hourKey].count++;
+            clientsData[hourKey].timestamps.push(now);
+            totalClients++;
+            
+            // Actualizar UI
+            clientButton.classList.add('pulse');
+            setTimeout(() => clientButton.classList.remove('pulse'), 400);
+            
+            // Actualizar datos y UI
+            updateStats();
+            renderHourTable();
+            saveDataToLocalStorage();
+        });
+        
+        // Agregar hora
+        addHourBtn.addEventListener('click', () => {
+            const hourValue = hourInput.value;
+            if (!hourValue) {
+                showNotification("Por favor, selecciona una hora");
+                return;
+            }
+            
+            // Formatear a HH:00
+            const [hours] = hourValue.split(':');
+            const hourFormatted = `${hours.padStart(2, '0')}:00`;
+            
+            // Verificar si ya existe
+            if (selectedHours.includes(hourFormatted)) {
+                showNotification("Esta hora ya está seleccionada");
+                return;
+            }
+            
+            // Agregar hora
+            selectedHours.push(hourFormatted);
+            selectedHours.sort(); // Ordenar cronológicamente
+            
+            // Actualizar UI
+            renderHourTags();
+            renderHourTable();
+            saveDataToLocalStorage();
+            
+            // Resetear input
+            hourInput.value = '';
+        });
+        
+        // Guardar datos
+        saveDataBtn.addEventListener('click', () => {
+            saveDataToLocalStorage();
+            showNotification("Datos guardados correctamente");
+        });
+        
+        // Reiniciar datos
+        resetDataBtn.addEventListener('click', () => {
+            if (confirm('¿Estás seguro de que quieres reiniciar todos los datos?')) {
+                clientsData = {};
+                totalClients = 0;
+                updateStats();
+                renderHourTable();
+                localStorage.removeItem('clientsData');
+                showNotification("Datos reiniciados correctamente");
+            }
+        });
+        
+        // Funciones de utilidad
+        function updateCurrentTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            currentTimeEl.textContent = timeString;
+        }
+        
+        function updateStats() {
+            totalClientsEl.textContent = totalClients;
+            
+            // Obtener clientes de la hora actual
+            const now = new Date();
+            const currentHourKey = `${String(now.getHours()).padStart(2, '0')}:00`;
+            const currentHourCount = clientsData[currentHourKey] ? clientsData[currentHourKey].count : 0;
+            currentHourClientsEl.textContent = currentHourCount;
+            
+            // Encontrar hora pico
+            let peakHour = '';
+            let peakCount = 0;
+            
+            for (const [hour, data] of Object.entries(clientsData)) {
+                if (selectedHours.includes(hour) && data.count > peakCount) {
+                    peakCount = data.count;
+                    peakHour = hour;
+                }
+            }
+            
+            peakHourClientsEl.textContent = peakCount;
+        }
+        
+        function renderHourTable() {
+            hourTable.innerHTML = '';
+            
+            // Si no hay horas seleccionadas
+            if (selectedHours.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td colspan="4" style="text-align: center; padding: 30px;">
+                        No hay horas seleccionadas. Agrega horas usando el panel de control.
+                    </td>
+                `;
+                hourTable.appendChild(row);
+                return;
+            }
+            
+            // Generar filas para cada hora seleccionada
+            selectedHours.forEach(hourKey => {
+                const hourData = clientsData[hourKey] || { count: 0, timestamps: [] };
+                
+                // Calcular promedio por minuto
+                const minutes = hourData.timestamps.length > 0 ? 
+                    hourData.timestamps.length / 60 : 0;
+                const avgPerMinute = minutes > 0 ? 
+                    (hourData.count / minutes).toFixed(2) : '0.00';
+                
+                // Determinar estado de productividad
+                let status = '';
+                let statusClass = '';
+                
+                if (hourData.count === 0) {
+                    status = 'Sin actividad';
+                    statusClass = 'inactive';
+                } else if (hourData.count < 5) {
+                    status = 'Baja';
+                    statusClass = 'low';
+                } else if (hourData.count < 10) {
+                    status = 'Media';
+                    statusClass = 'medium';
+                } else {
+                    status = 'Alta';
+                    statusClass = 'high';
+                }
+                
+                // Crear fila de tabla
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="hour-cell">${hourKey}</td>
+                    <td class="count-cell">${hourData.count}</td>
+                    <td>${avgPerMinute}</td>
+                    <td><span class="status ${statusClass}">${status}</span></td>
+                `;
+                
+                hourTable.appendChild(row);
+            });
+        }
+        
+        function renderHourTags() {
+            hourTags.innerHTML = '';
+            
+            selectedHours.forEach(hour => {
+                const tag = document.createElement('div');
+                tag.className = 'hour-tag';
+                tag.innerHTML = `
+                    <span>${hour}</span>
+                    <button class="delete-hour" data-hour="${hour}">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                hourTags.appendChild(tag);
+            });
+            
+            // Añadir eventos a los botones de eliminar
+            document.querySelectorAll('.delete-hour').forEach(button => {
+                button.addEventListener('click', () => {
+                    const hourToDelete = button.dataset.hour;
+                    selectedHours = selectedHours.filter(h => h !== hourToDelete);
+                    renderHourTags();
+                    renderHourTable();
+                    saveDataToLocalStorage();
+                });
+            });
+        }
+        
+        function saveDataToLocalStorage() {
+            const dataToSave = {
+                clientsData,
+                totalClients,
+                selectedHours
+            };
+            localStorage.setItem('clientsData', JSON.stringify(dataToSave));
+        }
+        
+        function loadSavedData() {
+            const savedData = localStorage.getItem('clientsData');
+            if (savedData) {
+                try {
+                    const parsedData = JSON.parse(savedData);
+                    clientsData = parsedData.clientsData || {};
+                    totalClients = parsedData.totalClients || 0;
+                    selectedHours = parsedData.selectedHours || [];
+                } catch (e) {
+                    console.error('Error loading saved data:', e);
+                }
+            }
+        }
+        
+        function loadThemePreference() {
+            const savedTheme = localStorage.getItem('theme');
+            isDarkTheme = savedTheme !== 'light';
+            
+            if (!isDarkTheme) {
+                document.body.classList.add('light-theme');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            }
+        }
+        
+        function showNotification(message) {
+            // Implementación básica de notificación
+            alert(message);
+        }
+    </script>
+</body>
+</html>
