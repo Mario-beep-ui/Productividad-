@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Productividad Cajeros</title>
+    <title>Sistema de Productividad para Cajeros</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -20,6 +20,9 @@
             --border-radius: 12px;
             --shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
             --transition: all 0.3s ease;
+            --caja1: #4cc9f0;
+            --caja2: #f72585;
+            --caja3: #7209b7;
         }
 
         .light-theme {
@@ -34,6 +37,9 @@
             --warning: #ca8a04;
             --danger: #dc2626;
             --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            --caja1: #3a86ff;
+            --caja2: #f72585;
+            --caja3: #7209b7;
         }
 
         * {
@@ -171,38 +177,54 @@
             color: var(--text-secondary);
         }
 
-        .btn-container {
-            display: flex;
-            justify-content: center;
+        .cajas-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
             margin: 30px 0;
         }
 
-        .client-btn {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent-color), var(--accent-secondary));
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 8px 25px rgba(76, 201, 240, 0.4);
+        @media (max-width: 768px) {
+            .cajas-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .caja-btn {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            height: 180px;
+            border-radius: var(--border-radius);
+            background: linear-gradient(135deg, var(--caja1), var(--accent-secondary));
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(76, 201, 240, 0.4);
             transition: var(--transition);
             position: relative;
             overflow: hidden;
+            padding: 20px;
+            text-align: center;
         }
 
-        .client-btn:hover {
+        .caja-btn.caja2 {
+            background: linear-gradient(135deg, var(--caja2), #b5179e);
+        }
+
+        .caja-btn.caja3 {
+            background: linear-gradient(135deg, var(--caja3), #560bad);
+        }
+
+        .caja-btn:hover {
             transform: scale(1.05);
             box-shadow: 0 12px 30px rgba(76, 201, 240, 0.6);
         }
 
-        .client-btn:active {
+        .caja-btn:active {
             transform: scale(0.98);
         }
 
@@ -227,7 +249,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 600px;
+            min-width: 800px;
         }
 
         thead {
@@ -265,6 +287,46 @@
             text-align: center;
             font-weight: 700;
             font-size: 1.1rem;
+        }
+
+        .caja1-cell {
+            color: var(--caja1);
+        }
+
+        .caja2-cell {
+            color: var(--caja2);
+        }
+
+        .caja3-cell {
+            color: var(--caja3);
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status.inactive {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+        }
+
+        .status.low {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .status.medium {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .status.high {
+            background: rgba(74, 222, 128, 0.2);
+            color: var(--success);
         }
 
         .actions {
@@ -520,19 +582,34 @@
             color: var(--text-secondary);
         }
 
+        /* Notificación */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: var(--border-radius);
+            background: var(--success);
+            color: white;
+            font-weight: 600;
+            box-shadow: var(--shadow);
+            transform: translateX(200%);
+            transition: transform 0.3s ease;
+            z-index: 2000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.error {
+            background: var(--danger);
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .stats-grid {
                 grid-template-columns: 1fr;
-            }
-            
-            .client-btn {
-                width: 150px;
-                height: 150px;
-            }
-            
-            .btn-icon {
-                font-size: 2.5rem;
             }
             
             .logo h1 {
@@ -558,16 +635,6 @@
         }
 
         @media (max-width: 480px) {
-            .client-btn {
-                width: 130px;
-                height: 130px;
-                font-size: 1.2rem;
-            }
-            
-            .btn-icon {
-                font-size: 2rem;
-            }
-            
             .dashboard {
                 grid-template-columns: 1fr;
             }
@@ -587,8 +654,8 @@
     <div class="container">
         <header>
             <div class="logo">
-                <i class="fas fa-calculator"></i>
-                <h1>Productividad Cajeros</h1>
+                <i class="fas fa-cash-register"></i>
+                <h1>Sistema de Cajeros</h1>
             </div>
             <div class="header-controls">
                 <button class="theme-toggle" id="themeToggle">
@@ -603,7 +670,7 @@
         <div class="dashboard">
             <div class="card">
                 <div class="card-header">
-                    <h2 class="card-title">Estadísticas</h2>
+                    <h2 class="card-title">Estadísticas Generales</h2>
                 </div>
                 <div class="stats-grid">
                     <div class="stat-card">
@@ -641,13 +708,21 @@
             
             <div class="card">
                 <div class="card-header">
-                    <h2 class="card-title">Registrar Cliente</h2>
+                    <h2 class="card-title">Registro de Clientes</h2>
                     <div id="currentTime">00:00:00</div>
                 </div>
-                <div class="btn-container">
-                    <button class="client-btn" id="clientButton">
+                <div class="cajas-container">
+                    <button class="caja-btn" id="caja1Btn">
                         <i class="fas fa-user-plus btn-icon"></i>
-                        <span class="btn-text">Registrar</span>
+                        <span class="btn-text">Caja 1</span>
+                    </button>
+                    <button class="caja-btn caja2" id="caja2Btn">
+                        <i class="fas fa-user-plus btn-icon"></i>
+                        <span class="btn-text">Caja 2</span>
+                    </button>
+                    <button class="caja-btn caja3" id="caja3Btn">
+                        <i class="fas fa-user-plus btn-icon"></i>
+                        <span class="btn-text">Caja 3</span>
                     </button>
                 </div>
                 <div class="actions">
@@ -665,14 +740,17 @@
         
         <div class="card">
             <div class="card-header">
-                <h2 class="card-title">Registro por Hora</h2>
+                <h2 class="card-title">Registro por Hora y Caja</h2>
             </div>
             <div class="table-container">
                 <table>
                     <thead>
                         <tr>
                             <th>Hora</th>
-                            <th>Clientes Atendidos</th>
+                            <th>Caja 1</th>
+                            <th>Caja 2</th>
+                            <th>Caja 3</th>
+                            <th>Total</th>
                             <th>Promedio/Minuto</th>
                             <th>Estado</th>
                         </tr>
@@ -685,7 +763,7 @@
         </div>
         
         <div class="footer">
-            <p>Registro de productividad para cajeros &copy; 2023</p>
+            <p>Sistema de productividad para cajeros &copy; 2023</p>
         </div>
     </div>
 
@@ -712,7 +790,7 @@
                     <div class="step-number">2</div>
                     <div class="step-text">
                         <div class="step-title">Registrar Clientes</div>
-                        <div class="step-description">Cada vez que atiendas a un cliente, presiona el botón "Registrar" en el panel derecho. Solo se pueden registrar clientes en las horas seleccionadas.</div>
+                        <div class="step-description">Cada vez que atiendas a un cliente, presiona el botón correspondiente a la caja. Solo se pueden registrar clientes en las horas seleccionadas.</div>
                     </div>
                 </div>
                 
@@ -728,7 +806,7 @@
                     <div class="step-number">4</div>
                     <div class="step-text">
                         <div class="step-title">Revisar Tabla de Productividad</div>
-                        <div class="step-description">La tabla muestra el detalle por cada hora seleccionada: cantidad de clientes, promedio por minuto y estado de productividad.</div>
+                        <div class="step-description">La tabla muestra el detalle por cada hora seleccionada y por caja: cantidad de clientes, promedio por minuto y estado de productividad.</div>
                     </div>
                 </div>
                 
@@ -747,16 +825,24 @@
         </div>
     </div>
 
+    <div class="notification" id="notification">Mensaje de notificación</div>
+
     <script>
         // Variables globales
-        let clientsData = {};
+        let clientsData = {
+            caja1: {},
+            caja2: {},
+            caja3: {}
+        };
         let totalClients = 0;
         let isDarkTheme = true;
-        let selectedHours = []; // Horas seleccionadas para monitoreo
+        let selectedHours = [];
         
         // Elementos DOM
         const themeToggle = document.getElementById('themeToggle');
-        const clientButton = document.getElementById('clientButton');
+        const caja1Btn = document.getElementById('caja1Btn');
+        const caja2Btn = document.getElementById('caja2Btn');
+        const caja3Btn = document.getElementById('caja3Btn');
         const totalClientsEl = document.getElementById('totalClients');
         const currentHourClientsEl = document.getElementById('currentHourClients');
         const peakHourClientsEl = document.getElementById('peakHourClients');
@@ -770,6 +856,7 @@
         const helpBtn = document.getElementById('helpBtn');
         const closeModal = document.getElementById('closeModal');
         const instructionsModal = document.getElementById('instructionsModal');
+        const notification = document.getElementById('notification');
         
         // Inicialización
         document.addEventListener('DOMContentLoaded', () => {
@@ -803,13 +890,13 @@
         // Abrir modal
         function openModal() {
             instructionsModal.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Evitar scroll en el fondo
+            document.body.style.overflow = 'hidden';
         }
         
         // Cerrar modal
         function closeModalFunc() {
             instructionsModal.classList.remove('active');
-            document.body.style.overflow = 'auto'; // Restaurar scroll
+            document.body.style.overflow = 'auto';
         }
         
         // Cambiar tema
@@ -822,46 +909,54 @@
             localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
         });
         
-        // Registrar cliente
-        clientButton.addEventListener('click', () => {
+        // Registrar cliente en caja específica
+        function registerClient(caja) {
             const now = new Date();
             const currentHour = now.getHours();
             const hourKey = `${String(currentHour).padStart(2, '0')}:00`;
             
             // Verificar si la hora actual está seleccionada
             if (!selectedHours.includes(hourKey)) {
-                showNotification("Esta hora no está seleccionada para monitoreo");
+                showNotification("Esta hora no está seleccionada para monitoreo", "error");
                 return;
             }
             
             // Crear entrada si no existe
-            if (!clientsData[hourKey]) {
-                clientsData[hourKey] = {
+            if (!clientsData[caja][hourKey]) {
+                clientsData[caja][hourKey] = {
                     count: 0,
                     timestamps: []
                 };
             }
             
             // Incrementar contadores
-            clientsData[hourKey].count++;
-            clientsData[hourKey].timestamps.push(now);
+            clientsData[caja][hourKey].count++;
+            clientsData[caja][hourKey].timestamps.push(now);
             totalClients++;
             
-            // Actualizar UI
-            clientButton.classList.add('pulse');
-            setTimeout(() => clientButton.classList.remove('pulse'), 400);
+            // Animación en el botón
+            const button = document.getElementById(`${caja}Btn`);
+            button.classList.add('pulse');
+            setTimeout(() => button.classList.remove('pulse'), 400);
             
             // Actualizar datos y UI
             updateStats();
             renderHourTable();
             saveDataToLocalStorage();
-        });
+            
+            showNotification(`Cliente registrado en ${caja.toUpperCase()}`, "success");
+        }
+        
+        // Event listeners para los botones de caja
+        caja1Btn.addEventListener('click', () => registerClient('caja1'));
+        caja2Btn.addEventListener('click', () => registerClient('caja2'));
+        caja3Btn.addEventListener('click', () => registerClient('caja3'));
         
         // Agregar hora
         addHourBtn.addEventListener('click', () => {
             const hourValue = hourInput.value;
             if (!hourValue) {
-                showNotification("Por favor, selecciona una hora");
+                showNotification("Por favor, selecciona una hora", "error");
                 return;
             }
             
@@ -871,7 +966,7 @@
             
             // Verificar si ya existe
             if (selectedHours.includes(hourFormatted)) {
-                showNotification("Esta hora ya está seleccionada");
+                showNotification("Esta hora ya está seleccionada", "error");
                 return;
             }
             
@@ -886,23 +981,31 @@
             
             // Resetear input
             hourInput.value = '';
+            
+            showNotification(`Hora ${hourFormatted} agregada`, "success");
         });
         
         // Guardar datos
         saveDataBtn.addEventListener('click', () => {
             saveDataToLocalStorage();
-            showNotification("Datos guardados correctamente");
+            showNotification("Datos guardados correctamente", "success");
         });
         
         // Reiniciar datos
         resetDataBtn.addEventListener('click', () => {
             if (confirm('¿Estás seguro de que quieres reiniciar todos los datos?')) {
-                clientsData = {};
+                clientsData = {
+                    caja1: {},
+                    caja2: {},
+                    caja3: {}
+                };
                 totalClients = 0;
+                selectedHours = [];
                 updateStats();
                 renderHourTable();
+                renderHourTags();
                 localStorage.removeItem('clientsData');
-                showNotification("Datos reiniciados correctamente");
+                showNotification("Datos reiniciados correctamente", "success");
             }
         });
         
@@ -919,16 +1022,26 @@
             // Obtener clientes de la hora actual
             const now = new Date();
             const currentHourKey = `${String(now.getHours()).padStart(2, '0')}:00`;
-            const currentHourCount = clientsData[currentHourKey] ? clientsData[currentHourKey].count : 0;
+            
+            const currentHourCount = 
+                (clientsData.caja1[currentHourKey]?.count || 0) +
+                (clientsData.caja2[currentHourKey]?.count || 0) +
+                (clientsData.caja3[currentHourKey]?.count || 0);
+                
             currentHourClientsEl.textContent = currentHourCount;
             
             // Encontrar hora pico
             let peakHour = '';
             let peakCount = 0;
             
-            for (const [hour, data] of Object.entries(clientsData)) {
-                if (selectedHours.includes(hour) && data.count > peakCount) {
-                    peakCount = data.count;
+            for (const hour of selectedHours) {
+                const hourTotal = 
+                    (clientsData.caja1[hour]?.count || 0) +
+                    (clientsData.caja2[hour]?.count || 0) +
+                    (clientsData.caja3[hour]?.count || 0);
+                    
+                if (hourTotal > peakCount) {
+                    peakCount = hourTotal;
                     peakHour = hour;
                 }
             }
@@ -943,7 +1056,7 @@
             if (selectedHours.length === 0) {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td colspan="4" style="text-align: center; padding: 30px;">
+                    <td colspan="7" style="text-align: center; padding: 30px;">
                         No hay horas seleccionadas. Agrega horas usando el panel de control.
                     </td>
                 `;
@@ -953,25 +1066,31 @@
             
             // Generar filas para cada hora seleccionada
             selectedHours.forEach(hourKey => {
-                const hourData = clientsData[hourKey] || { count: 0, timestamps: [] };
+                const caja1Data = clientsData.caja1[hourKey] || { count: 0, timestamps: [] };
+                const caja2Data = clientsData.caja2[hourKey] || { count: 0, timestamps: [] };
+                const caja3Data = clientsData.caja3[hourKey] || { count: 0, timestamps: [] };
+                
+                const totalCount = caja1Data.count + caja2Data.count + caja3Data.count;
                 
                 // Calcular promedio por minuto
-                const minutes = hourData.timestamps.length > 0 ? 
-                    hourData.timestamps.length / 60 : 0;
-                const avgPerMinute = minutes > 0 ? 
-                    (hourData.count / minutes).toFixed(2) : '0.00';
+                const now = new Date();
+                const currentHour = `${String(now.getHours()).padStart(2, '0')}:00`;
+                const minutes = hourKey === currentHour ? 
+                    Math.max(1, now.getMinutes()) : 60; // Evitar división por cero
+                    
+                const avgPerMinute = (totalCount / minutes).toFixed(2);
                 
                 // Determinar estado de productividad
                 let status = '';
                 let statusClass = '';
                 
-                if (hourData.count === 0) {
+                if (totalCount === 0) {
                     status = 'Sin actividad';
                     statusClass = 'inactive';
-                } else if (hourData.count < 5) {
+                } else if (totalCount < 5) {
                     status = 'Baja';
                     statusClass = 'low';
-                } else if (hourData.count < 10) {
+                } else if (totalCount < 10) {
                     status = 'Media';
                     statusClass = 'medium';
                 } else {
@@ -983,7 +1102,10 @@
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td class="hour-cell">${hourKey}</td>
-                    <td class="count-cell">${hourData.count}</td>
+                    <td class="count-cell caja1-cell">${caja1Data.count}</td>
+                    <td class="count-cell caja2-cell">${caja2Data.count}</td>
+                    <td class="count-cell caja3-cell">${caja3Data.count}</td>
+                    <td class="count-cell">${totalCount}</td>
                     <td>${avgPerMinute}</td>
                     <td><span class="status ${statusClass}">${status}</span></td>
                 `;
@@ -1015,6 +1137,7 @@
                     renderHourTags();
                     renderHourTable();
                     saveDataToLocalStorage();
+                    showNotification(`Hora ${hourToDelete} eliminada`, "success");
                 });
             });
         }
@@ -1033,9 +1156,18 @@
             if (savedData) {
                 try {
                     const parsedData = JSON.parse(savedData);
-                    clientsData = parsedData.clientsData || {};
+                    clientsData = parsedData.clientsData || {
+                        caja1: {},
+                        caja2: {},
+                        caja3: {}
+                    };
                     totalClients = parsedData.totalClients || 0;
                     selectedHours = parsedData.selectedHours || [];
+                    
+                    // Renderizar después de cargar
+                    renderHourTags();
+                    renderHourTable();
+                    updateStats();
                 } catch (e) {
                     console.error('Error loading saved data:', e);
                 }
@@ -1052,9 +1184,18 @@
             }
         }
         
-        function showNotification(message) {
-            // Implementación básica de notificación
-            alert(message);
+        function showNotification(message, type = "success") {
+            notification.textContent = message;
+            notification.className = "notification show";
+            if (type === "error") {
+                notification.classList.add("error");
+            } else {
+                notification.classList.remove("error");
+            }
+            
+            setTimeout(() => {
+                notification.classList.remove("show");
+            }, 3000);
         }
     </script>
 </body>
