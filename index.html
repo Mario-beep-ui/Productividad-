@@ -4,10 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Productividad para Cajeros</title>
+    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- jsPDF for PDF generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- html2canvas for capturing DOM elements as images -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
+        /* Root variables for theming */
         :root {
             --bg-primary: #1a1a2e;
             --bg-secondary: #16213e;
@@ -30,6 +34,7 @@
             --caja6: #9d4edd;
         }
 
+        /* Light theme variables */
         .light-theme {
             --bg-primary: #f0f2f5;
             --bg-secondary: #ffffff;
@@ -50,6 +55,7 @@
             --caja6: #9d4edd;
         }
 
+        /* Universal box-sizing and font */
         * {
             margin: 0;
             padding: 0;
@@ -57,6 +63,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
+        /* Body styling */
         body {
             background-color: var(--bg-primary);
             color: var(--text-primary);
@@ -65,11 +72,13 @@
             padding: 20px;
         }
 
+        /* Container for content centering */
         .container {
             max-width: 1200px;
             margin: 0 auto;
         }
 
+        /* Header styling */
         header {
             display: flex;
             justify-content: space-between;
@@ -79,6 +88,7 @@
             border-bottom: 1px solid var(--bg-tertiary);
         }
 
+        /* Logo styling */
         .logo {
             display: flex;
             align-items: center;
@@ -95,6 +105,7 @@
             font-weight: 700;
         }
 
+        /* Header controls (theme toggle, help button) */
         .header-controls {
             display: flex;
             gap: 15px;
@@ -123,6 +134,7 @@
             transform: rotate(15deg);
         }
 
+        /* Dashboard grid layout */
         .dashboard {
             display: grid;
             grid-template-columns: 1fr;
@@ -130,12 +142,14 @@
             margin-bottom: 30px;
         }
 
+        /* Responsive dashboard for larger screens */
         @media (min-width: 768px) {
             .dashboard {
                 grid-template-columns: 1fr 1fr;
             }
         }
 
+        /* Card styling */
         .card {
             background: var(--bg-secondary);
             border-radius: var(--border-radius);
@@ -158,6 +172,7 @@
             font-weight: 600;
         }
 
+        /* Mode switcher (Medicina/Autoservicio) */
         .mode-switcher {
             display: flex;
             gap: 10px;
@@ -190,6 +205,7 @@
             margin-right: 8px;
         }
 
+        /* Stats grid layout */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -217,6 +233,7 @@
             color: var(--text-secondary);
         }
 
+        /* Caja buttons container */
         .cajas-container {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -224,12 +241,14 @@
             margin: 30px 0;
         }
 
+        /* Responsive caja buttons for smaller screens */
         @media (max-width: 768px) {
             .cajas-container {
                 grid-template-columns: 1fr;
             }
         }
 
+        /* Caja button styling */
         .caja-btn {
             display: flex;
             flex-direction: column;
@@ -251,26 +270,14 @@
             text-align: center;
         }
 
-        .caja-btn.caja2 {
-            background: linear-gradient(135deg, var(--caja2), #b5179e);
-        }
+        /* Specific caja button colors */
+        .caja-btn.caja2 { background: linear-gradient(135deg, var(--caja2), #b5179e); }
+        .caja-btn.caja3 { background: linear-gradient(135deg, var(--caja3), #560bad); }
+        .caja-btn.caja4 { background: linear-gradient(135deg, var(--caja4), #ff6b00); }
+        .caja-btn.caja5 { background: linear-gradient(135deg, var(--caja5), #0077b6); }
+        .caja-btn.caja6 { background: linear-gradient(135deg, var(--caja6), #5a189a); }
 
-        .caja-btn.caja3 {
-            background: linear-gradient(135deg, var(--caja3), #560bad);
-        }
-
-        .caja-btn.caja4 {
-            background: linear-gradient(135deg, var(--caja4), #ff6b00);
-        }
-
-        .caja-btn.caja5 {
-            background: linear-gradient(135deg, var(--caja5), #0077b6);
-        }
-
-        .caja-btn.caja6 {
-            background: linear-gradient(135deg, var(--caja6), #5a189a);
-        }
-
+        /* Caja button hover effects */
         .caja-btn:hover {
             transform: scale(1.05);
             box-shadow: 0 12px 30px rgba(76, 201, 240, 0.6);
@@ -289,6 +296,7 @@
             font-size: 1.2rem;
         }
 
+        /* Table container styling */
         .table-container {
             overflow-x: auto;
             border-radius: var(--border-radius);
@@ -301,7 +309,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 800px;
+            min-width: 800px; /* Ensures table is wide enough on smaller screens */
         }
 
         thead {
@@ -341,30 +349,15 @@
             font-size: 1.1rem;
         }
 
-        .caja1-cell {
-            color: var(--caja1);
-        }
+        /* Specific cell colors for cajas */
+        .caja1-cell { color: var(--caja1); }
+        .caja2-cell { color: var(--caja2); }
+        .caja3-cell { color: var(--caja3); }
+        .caja4-cell { color: var(--caja4); }
+        .caja5-cell { color: var(--caja5); }
+        .caja6-cell { color: var(--caja6); }
 
-        .caja2-cell {
-            color: var(--caja2);
-        }
-
-        .caja3-cell {
-            color: var(--caja3);
-        }
-
-        .caja4-cell {
-            color: var(--caja4);
-        }
-
-        .caja5-cell {
-            color: var(--caja5);
-        }
-
-        .caja6-cell {
-            color: var(--caja6);
-        }
-
+        /* Status badge styling */
         .status {
             display: inline-block;
             padding: 5px 12px;
@@ -373,26 +366,12 @@
             font-weight: 600;
         }
 
-        .status.inactive {
-            background: var(--bg-tertiary);
-            color: var(--text-secondary);
-        }
+        .status.inactive { background: var(--bg-tertiary); color: var(--text-secondary); }
+        .status.low { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+        .status.medium { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+        .status.high { background: rgba(74, 222, 128, 0.2); color: var(--success); }
 
-        .status.low {
-            background: rgba(239, 68, 68, 0.2);
-            color: var(--danger);
-        }
-
-        .status.medium {
-            background: rgba(245, 158, 11, 0.2);
-            color: var(--warning);
-        }
-
-        .status.high {
-            background: rgba(74, 222, 128, 0.2);
-            color: var(--success);
-        }
-
+        /* Action buttons container */
         .actions {
             display: flex;
             gap: 15px;
@@ -415,26 +394,17 @@
             color: var(--text-primary);
         }
 
-        .save-btn {
-            background: var(--success);
-            color: white;
-        }
-
-        .reset-btn {
-            background: var(--danger);
-            color: white;
-        }
-
-        .pdf-btn {
-            background: #d62828;
-            color: white;
-        }
+        /* Specific action button colors */
+        .save-btn { background: var(--success); color: white; }
+        .reset-btn { background: var(--danger); color: white; }
+        .pdf-btn { background: #d62828; color: white; }
 
         .action-btn:hover {
             opacity: 0.9;
             transform: translateY(-2px);
         }
 
+        /* Footer styling */
         .footer {
             text-align: center;
             margin-top: 40px;
@@ -444,6 +414,7 @@
             border-top: 1px solid var(--bg-tertiary);
         }
 
+        /* Pulse animation for buttons */
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.1); }
@@ -454,6 +425,7 @@
             animation: pulse 0.4s ease;
         }
 
+        /* Hour selector styling */
         .hour-selector {
             margin-top: 20px;
         }
@@ -525,6 +497,7 @@
             transform: translateY(-2px);
         }
 
+        /* Modal overlay for instructions and confirmation */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -648,6 +621,7 @@
             color: var(--text-secondary);
         }
 
+        /* Notification message styling */
         .notification {
             position: fixed;
             top: 20px;
@@ -671,6 +645,7 @@
             background: var(--danger);
         }
 
+        /* Media queries for responsiveness */
         @media (max-width: 768px) {
             .stats-grid {
                 grid-template-columns: 1fr;
@@ -762,6 +737,7 @@
                         <p>Selecciona las horas que deseas monitorear</p>
                     </div>
                     <div class="hour-tags" id="hourTags">
+                        <!-- Hour tags will be rendered here -->
                     </div>
                     <div class="hour-input-container">
                         <div class="hour-input">
@@ -861,6 +837,7 @@
                         </tr>
                     </thead>
                     <tbody id="hourTableMedicine">
+                        <!-- Medicine table rows will be rendered here -->
                     </tbody>
                 </table>
             </div>
@@ -879,16 +856,18 @@
                         </tr>
                     </thead>
                     <tbody id="hourTableSelfService">
+                        <!-- Self-service table rows will be rendered here -->
                     </tbody>
                 </table>
             </div>
         </div>
         
         <div class="footer">
-            <p>Sistema de productividad para cajeros by Mario Vazquez &copy; 2025 <br /> <br /> Version 2.1.0 </p>
+            <p>Sistema de productividad para cajeros by Mario Vazquez &copy; 2025 <br /><br /> Version 2.0.1</p>
         </div>
     </div>
 
+    <!-- Instructions Modal -->
     <div class="modal-overlay" id="instructionsModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -954,27 +933,53 @@
         </div>
     </div>
 
+    <!-- Custom Confirmation Modal for Reset Data -->
+    <div class="modal-overlay" id="confirmResetModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Confirmar Reinicio</h2>
+                <button class="close-modal" id="closeResetModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="instructions-content">
+                <p>¿Estás seguro de que quieres reiniciar todos los datos? Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="actions" style="justify-content: center; margin-top: 30px;">
+                <button class="action-btn reset-btn" id="confirmResetBtn">
+                    <i class="fas fa-check"></i> Sí, Reiniciar
+                </button>
+                <button class="action-btn" id="cancelResetBtn" style="background: var(--bg-tertiary); color: var(--text-primary);">
+                    <i class="fas fa-times"></i> Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Message -->
     <div class="notification" id="notification">Mensaje de notificación</div>
 
     <script>
+        // Global state variables for the application
         let clientsData = {
-            medicina: {
+            medicina: { // Data for 'medicina' mode
                 caja1: {},
                 caja2: {},
                 caja3: {}
             },
-            autoservicio: {
+            autoservicio: { // Data for 'autoservicio' mode
                 caja4: {},
                 caja5: {},
                 caja6: {}
             }
         };
-        let totalClients = 0;
-        let isDarkTheme = true;
-        let selectedHours = [];
-        let currentMode = 'medicina';
-        let currentTableMode = 'medicina';
+        let totalClients = 0; // Total clients across all modes and hours
+        let isDarkTheme = true; // Current theme state
+        let selectedHours = []; // Array to store hours selected for monitoring
+        let currentMode = 'medicina'; // Current active mode for client registration
+        let currentTableMode = 'medicina'; // Current active mode for table display
         
+        // DOM element references
         const themeToggle = document.getElementById('themeToggle');
         const caja1Btn = document.getElementById('caja1Btn');
         const caja2Btn = document.getElementById('caja2Btn');
@@ -1005,34 +1010,59 @@
         const selfServiceCajas = document.getElementById('selfServiceCajas');
         const medicineTable = document.getElementById('medicineTable');
         const selfServiceTable = document.getElementById('selfServiceTable');
+
+        // New DOM elements for custom reset confirmation modal
+        const confirmResetModal = document.getElementById('confirmResetModal');
+        const closeResetModalBtn = document.getElementById('closeResetModal');
+        const confirmResetBtn = document.getElementById('confirmResetBtn');
+        const cancelResetBtn = document.getElementById('cancelResetBtn');
         
+        /**
+         * Initializes the application when the DOM is fully loaded.
+         * Attaches all event listeners and loads saved data/theme.
+         */
         document.addEventListener('DOMContentLoaded', () => {
-            loadThemePreference();
-            loadSavedData();
-            renderHourTags();
-            renderHourTables();
-            updateStats();
+            loadThemePreference(); // Load user's theme preference
+            loadSavedData(); // Load previously saved client data
+            renderHourTags(); // Display selected hours
+            renderHourTables(); // Render the productivity tables
+            updateStats(); // Update general statistics
             
-            helpBtn.addEventListener('click', openModal);
-            closeModalBtn.addEventListener('click', closeModalFunc);
-            
+            // Event listeners for modals
+            helpBtn.addEventListener('click', openInstructionsModal);
+            closeModalBtn.addEventListener('click', closeInstructionsModal);
             instructionsModal.addEventListener('click', (e) => {
                 if (e.target === instructionsModal) {
-                    closeModalFunc();
+                    closeInstructionsModal(); // Close modal if clicking outside content
                 }
             });
-            
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape' && instructionsModal.classList.contains('active')) {
-                    closeModalFunc();
+                    closeInstructionsModal(); // Close modal with Escape key
+                }
+            });
+
+            // Event listeners for custom reset confirmation modal
+            resetDataBtn.addEventListener('click', openConfirmResetModal); // Open custom modal on reset click
+            closeResetModalBtn.addEventListener('click', closeConfirmResetModal);
+            confirmResetBtn.addEventListener('click', () => {
+                performReset(); // Perform reset if confirmed
+                closeConfirmResetModal();
+            });
+            cancelResetBtn.addEventListener('click', closeConfirmResetModal);
+            confirmResetModal.addEventListener('click', (e) => {
+                if (e.target === confirmResetModal) {
+                    closeConfirmResetModal();
                 }
             });
             
+            // Event listeners for mode switching (Medicine/Self-service)
             medicineModeBtn.addEventListener('click', () => setMode('medicina'));
             selfServiceModeBtn.addEventListener('click', () => setMode('autoservicio'));
             medicineTableBtn.addEventListener('click', () => setTableMode('medicina'));
             selfServiceTableBtn.addEventListener('click', () => setTableMode('autoservicio'));
             
+            // Event listeners for client registration buttons
             caja1Btn.addEventListener('click', () => registerClient('caja1'));
             caja2Btn.addEventListener('click', () => registerClient('caja2'));
             caja3Btn.addEventListener('click', () => registerClient('caja3'));
@@ -1040,81 +1070,112 @@
             caja5Btn.addEventListener('click', () => registerClient('caja5'));
             caja6Btn.addEventListener('click', () => registerClient('caja6'));
             
+            // Event listeners for actions (Add Hour, Save, PDF)
             addHourBtn.addEventListener('click', addHour);
             saveDataBtn.addEventListener('click', saveData);
-            resetDataBtn.addEventListener('click', resetData);
             printPdfBtn.addEventListener('click', generatePdf);
             themeToggle.addEventListener('click', toggleTheme);
         });
         
+        /**
+         * Sets the current mode for client registration (Medicina or Autoservicio).
+         * @param {string} mode - The mode to set ('medicina' or 'autoservicio').
+         */
         function setMode(mode) {
             currentMode = mode;
             
-            if (mode === 'medicina') {
-                medicineModeBtn.classList.add('active');
-                selfServiceModeBtn.classList.remove('active');
-                medicineCajas.style.display = 'grid';
-                selfServiceCajas.style.display = 'none';
-            } else {
-                medicineModeBtn.classList.remove('active');
-                selfServiceModeBtn.classList.add('active');
-                medicineCajas.style.display = 'none';
-                selfServiceCajas.style.display = 'grid';
-            }
+            // Update active state for mode buttons
+            medicineModeBtn.classList.toggle('active', mode === 'medicina');
+            selfServiceModeBtn.classList.toggle('active', mode === 'autoservicio');
             
-            saveDataToLocalStorage();
+            // Show/hide caja buttons based on mode
+            medicineCajas.style.display = (mode === 'medicina') ? 'grid' : 'none';
+            selfServiceCajas.style.display = (mode === 'autoservicio') ? 'grid' : 'none';
+            
+            saveDataToLocalStorage(); // Save the current mode preference
         }
         
+        /**
+         * Sets the current mode for table display (Medicina or Autoservicio).
+         * @param {string} mode - The table mode to set ('medicina' or 'autoservicio').
+         */
         function setTableMode(mode) {
             currentTableMode = mode;
             
-            if (mode === 'medicina') {
-                medicineTableBtn.classList.add('active');
-                selfServiceTableBtn.classList.remove('active');
-                medicineTable.style.display = 'block';
-                selfServiceTable.style.display = 'none';
-            } else {
-                medicineTableBtn.classList.remove('active');
-                selfServiceTableBtn.classList.add('active');
-                medicineTable.style.display = 'none';
-                selfServiceTable.style.display = 'block';
-            }
+            // Update active state for table mode buttons
+            medicineTableBtn.classList.toggle('active', mode === 'medicina');
+            selfServiceTableBtn.classList.toggle('active', mode === 'autoservicio');
             
-            renderHourTables();
-            saveDataToLocalStorage();
+            // Show/hide tables based on mode
+            medicineTable.style.display = (mode === 'medicina') ? 'block' : 'none';
+            selfServiceTable.style.display = (mode === 'autoservicio') ? 'block' : 'none';
+            
+            renderHourTables(); // Re-render tables to reflect the change
+            saveDataToLocalStorage(); // Save the current table mode preference
         }
         
-        function openModal() {
+        /**
+         * Opens the instructions modal.
+         */
+        function openInstructionsModal() {
             instructionsModal.classList.add('active');
-            document.body.style.overflow = 'hidden';
+            document.body.style.overflow = 'hidden'; // Prevent scrolling background
         }
         
-        function closeModalFunc() {
+        /**
+         * Closes the instructions modal.
+         */
+        function closeInstructionsModal() {
             instructionsModal.classList.remove('active');
-            document.body.style.overflow = 'auto';
+            document.body.style.overflow = 'auto'; // Re-enable background scrolling
+        }
+
+        /**
+         * Opens the custom confirmation modal for resetting data.
+         */
+        function openConfirmResetModal() {
+            confirmResetModal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling background
         }
         
+        /**
+         * Closes the custom confirmation modal for resetting data.
+         */
+        function closeConfirmResetModal() {
+            confirmResetModal.classList.remove('active');
+            document.body.style.overflow = 'auto'; // Re-enable background scrolling
+        }
+        
+        /**
+         * Toggles between dark and light themes.
+         */
         function toggleTheme() {
             isDarkTheme = !isDarkTheme;
             document.body.classList.toggle('light-theme', !isDarkTheme);
             themeToggle.innerHTML = isDarkTheme ? 
                 '<i class="fas fa-moon"></i>' : 
                 '<i class="fas fa-sun"></i>';
-            localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
+            localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light'); // Save theme preference
         }
         
+        /**
+         * Registers a client for a specific cash register (caja) in the current mode.
+         * @param {string} caja - The ID of the cash register (e.g., 'caja1', 'caja4').
+         */
         function registerClient(caja) {
             const now = new Date();
             const currentHour = now.getHours();
-            const hourKey = `${String(currentHour).padStart(2, '0')}:00`;
+            const hourKey = `${String(currentHour).padStart(2, '0')}:00`; // Format hour as HH:00
             
+            // Check if the current hour is selected for monitoring
             if (!selectedHours.includes(hourKey)) {
                 showNotification("Esta hora no está seleccionada para monitoreo", "error");
                 return;
             }
             
-            const mode = currentMode;
+            const mode = currentMode; // Get the current active mode
             
+            // Initialize clientsData structure if it doesn't exist
             if (!clientsData[mode][caja]) {
                 clientsData[mode][caja] = {};
             }
@@ -1122,25 +1183,29 @@
             if (!clientsData[mode][caja][hourKey]) {
                 clientsData[mode][caja][hourKey] = {
                     count: 0,
-                    timestamps: []
+                    timestamps: [] // Store timestamps for potential future use (e.g., avg time per client)
                 };
             }
             
-            clientsData[mode][caja][hourKey].count++;
-            clientsData[mode][caja][hourKey].timestamps.push(now);
-            totalClients++;
+            clientsData[mode][caja][hourKey].count++; // Increment client count
+            clientsData[mode][caja][hourKey].timestamps.push(now); // Add timestamp
+            totalClients++; // Increment overall total clients
             
+            // Add pulse animation to the clicked button
             const button = document.getElementById(`${caja}Btn`);
             button.classList.add('pulse');
-            setTimeout(() => button.classList.remove('pulse'), 400);
+            setTimeout(() => button.classList.remove('pulse'), 400); // Remove pulse after animation
             
-            updateStats();
-            renderHourTables();
-            saveDataToLocalStorage();
+            updateStats(); // Update dashboard statistics
+            renderHourTables(); // Re-render tables to show new data
+            saveDataToLocalStorage(); // Save data to local storage
             
             showNotification(`Cliente registrado en ${caja.toUpperCase()}`, "success");
         }
         
+        /**
+         * Adds a selected hour to the monitoring list.
+         */
         function addHour() {
             const hourValue = hourInput.value;
             if (!hourValue) {
@@ -1149,99 +1214,108 @@
             }
             
             const [hours] = hourValue.split(':');
-            const hourFormatted = `${hours.padStart(2, '0')}:00`;
+            const hourFormatted = `${hours.padStart(2, '0')}:00`; // Ensure HH:00 format
             
+            // Prevent adding duplicate hours
             if (selectedHours.includes(hourFormatted)) {
                 showNotification("Esta hora ya está seleccionada", "error");
                 return;
             }
             
-            selectedHours.push(hourFormatted);
-            selectedHours.sort();
+            selectedHours.push(hourFormatted); // Add hour to the list
+            selectedHours.sort(); // Keep hours sorted
             
-            renderHourTags();
-            renderHourTables();
-            saveDataToLocalStorage();
+            renderHourTags(); // Update hour tags display
+            renderHourTables(); // Re-render tables with new hour
+            saveDataToLocalStorage(); // Save updated selected hours
             
-            hourInput.value = '';
+            hourInput.value = ''; // Clear input field
             
             showNotification(`Hora ${hourFormatted} agregada`, "success");
         }
         
+        /**
+         * Saves all current application data to local storage.
+         */
         function saveData() {
             saveDataToLocalStorage();
             showNotification("Datos guardados correctamente", "success");
         }
         
-        function resetData() {
-            if (confirm('¿Estás seguro de que quieres reiniciar todos los datos?')) {
-                clientsData = {
-                    medicina: {
-                        caja1: {},
-                        caja2: {},
-                        caja3: {}
-                    },
-                    autoservicio: {
-                        caja4: {},
-                        caja5: {},
-                        caja6: {}
-                    }
-                };
-                totalClients = 0;
-                selectedHours = [];
-                updateStats();
-                renderHourTables();
-                renderHourTags();
-                localStorage.removeItem('clientsData');
-                showNotification("Datos reiniciados correctamente", "success");
-            }
+        /**
+         * Performs the actual reset of all application data.
+         * This function is called after user confirmation from the custom modal.
+         */
+        function performReset() {
+            clientsData = {
+                medicina: { caja1: {}, caja2: {}, caja3: {} },
+                autoservicio: { caja4: {}, caja5: {}, caja6: {} }
+            };
+            totalClients = 0;
+            selectedHours = [];
+            updateStats();
+            renderHourTables();
+            renderHourTags();
+            localStorage.removeItem('clientsData'); // Clear data from local storage
+            showNotification("Datos reiniciados correctamente", "success");
         }
         
+        /**
+         * Generates a PDF report of the currently visible productivity table.
+         */
         function generatePdf() {
+            // Determine which table is currently visible
             const visibleTable = medicineTable.style.display !== 'none' ? 
                 medicineTable : selfServiceTable;
             
             html2canvas(visibleTable).then(canvas => {
                 const imgData = canvas.toDataURL('image/png');
-                const { jsPDF } = window.jspdf;
+                const { jsPDF } = window.jspdf; // Get jsPDF from window object
                 const pdf = new jsPDF({
-                    orientation: 'landscape',
+                    orientation: 'landscape', // Landscape orientation for wider tables
                     unit: 'mm',
                     format: 'a4'
                 });
                 
+                // Set title based on the visible table
                 const title = medicineTable.style.display !== 'none' ? 
                     "Registro de Productividad - Medicina" : "Registro de Productividad - Autoservicio";
                 
-                const date = new Date().toLocaleDateString();
+                const date = new Date().toLocaleDateString(); // Current date for the PDF
                 
                 const pdfWidth = pdf.internal.pageSize.getWidth();
                 const pdfHeight = pdf.internal.pageSize.getHeight();
-                const imgWidth = pdfWidth - 20;
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                const imgWidth = pdfWidth - 20; // 10mm margin on each side
+                const imgHeight = (canvas.height * imgWidth) / canvas.width; // Maintain aspect ratio
                 
+                // Add title and date to PDF
                 pdf.setFontSize(18);
                 pdf.text(title, pdfWidth / 2, 15, { align: 'center' });
                 
                 pdf.setFontSize(12);
                 pdf.text(`Fecha: ${date}`, pdfWidth / 2, 22, { align: 'center' });
                 
+                // Add the captured image of the table to PDF
                 pdf.addImage(imgData, 'PNG', 10, 30, imgWidth, imgHeight);
                 
+                // Save the PDF file
                 pdf.save(`registro_productividad_${date.replace(/\//g, '-')}.pdf`);
                 
                 showNotification("PDF generado correctamente", "success");
             });
         }
         
+        /**
+         * Updates the general statistics displayed on the dashboard.
+         */
         function updateStats() {
-            totalClientsEl.textContent = totalClients;
+            totalClientsEl.textContent = totalClients; // Update total clients
             
             const now = new Date();
             const currentHourKey = `${String(now.getHours()).padStart(2, '0')}:00`;
             
             let currentHourCount = 0;
-            
+            // Calculate clients for the current hour across all cajas and modes
             Object.keys(clientsData).forEach(mode => {
                 Object.keys(clientsData[mode]).forEach(caja => {
                     if (clientsData[mode][caja][currentHourKey]) {
@@ -1250,14 +1324,14 @@
                 });
             });
                 
-            currentHourClientsEl.textContent = currentHourCount;
+            currentHourClientsEl.textContent = currentHourCount; // Update current hour clients
             
             let peakHour = '';
             let peakCount = 0;
             
+            // Find the hour with the highest client count
             for (const hour of selectedHours) {
                 let hourTotal = 0;
-                
                 Object.keys(clientsData).forEach(mode => {
                     Object.keys(clientsData[mode]).forEach(caja => {
                         if (clientsData[mode][caja][hour]) {
@@ -1272,22 +1346,31 @@
                 }
             }
             
+            // Display peak hour information
             peakHourClientsEl.textContent = peakCount > 0 ? `${peakHour} (${peakCount})` : 'N/A';
         }
         
+        /**
+         * Renders both medicine and self-service productivity tables.
+         */
         function renderHourTables() {
             renderHourTable('medicina');
             renderHourTable('autoservicio');
         }
         
+        /**
+         * Renders a single productivity table (medicine or self-service).
+         * @param {string} mode - The mode for which to render the table ('medicina' or 'autoservicio').
+         */
         function renderHourTable(mode) {
             const tableBody = mode === 'medicina' ? 
                 hourTableMedicine : hourTableSelfService;
                 
-            tableBody.innerHTML = '';
+            tableBody.innerHTML = ''; // Clear existing table rows
             
+            // Display message if no hours are selected
             if (selectedHours.length === 0) {
-                const colSpan = mode === 'medicina' ? 7 : 7;
+                const colSpan = 7; // Number of columns in the table
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td colspan="${colSpan}" style="text-align: center; padding: 30px;">
@@ -1298,41 +1381,49 @@
                 return;
             }
             
+            // Iterate through selected hours to populate table rows
             selectedHours.forEach(hourKey => {
-                let caja1Data = { count: 0, timestamps: [] };
-                let caja2Data = { count: 0, timestamps: [] };
-                let caja3Data = { count: 0, timestamps: [] };
-                let caja4Data = { count: 0, timestamps: [] };
-                let caja5Data = { count: 0, timestamps: [] };
-                let caja6Data = { count: 0, timestamps: [] };
+                // Initialize data for each caja for the current hour
+                let cajaData = {
+                    caja1: { count: 0, timestamps: [] },
+                    caja2: { count: 0, timestamps: [] },
+                    caja3: { count: 0, timestamps: [] },
+                    caja4: { count: 0, timestamps: [] },
+                    caja5: { count: 0, timestamps: [] },
+                    caja6: { count: 0, timestamps: [] }
+                };
                 
+                // Populate caja data based on the current mode
                 if (mode === 'medicina') {
                     if (clientsData.medicina.caja1 && clientsData.medicina.caja1[hourKey]) 
-                        caja1Data = clientsData.medicina.caja1[hourKey];
+                        cajaData.caja1 = clientsData.medicina.caja1[hourKey];
                     if (clientsData.medicina.caja2 && clientsData.medicina.caja2[hourKey]) 
-                        caja2Data = clientsData.medicina.caja2[hourKey];
+                        cajaData.caja2 = clientsData.medicina.caja2[hourKey];
                     if (clientsData.medicina.caja3 && clientsData.medicina.caja3[hourKey]) 
-                        caja3Data = clientsData.medicina.caja3[hourKey];
-                } else {
+                        cajaData.caja3 = clientsData.medicina.caja3[hourKey];
+                } else { // mode === 'autoservicio'
                     if (clientsData.autoservicio.caja4 && clientsData.autoservicio.caja4[hourKey]) 
-                        caja4Data = clientsData.autoservicio.caja4[hourKey];
+                        cajaData.caja4 = clientsData.autoservicio.caja4[hourKey];
                     if (clientsData.autoservicio.caja5 && clientsData.autoservicio.caja5[hourKey]) 
-                        caja5Data = clientsData.autoservicio.caja5[hourKey];
+                        cajaData.caja5 = clientsData.autoservicio.caja5[hourKey];
                     if (clientsData.autoservicio.caja6 && clientsData.autoservicio.caja6[hourKey]) 
-                        caja6Data = clientsData.autoservicio.caja6[hourKey];
+                        cajaData.caja6 = clientsData.autoservicio.caja6[hourKey];
                 }
                 
+                // Calculate total clients for the current hour and mode
                 const totalCount = mode === 'medicina' ? 
-                    caja1Data.count + caja2Data.count + caja3Data.count :
-                    caja4Data.count + caja5Data.count + caja6Data.count;
+                    cajaData.caja1.count + cajaData.caja2.count + cajaData.caja3.count :
+                    cajaData.caja4.count + cajaData.caja5.count + cajaData.caja6.count;
                 
                 const now = new Date();
                 const currentHour = `${String(now.getHours()).padStart(2, '0')}:00`;
+                // Calculate minutes passed in the current hour or 60 for past hours
                 const minutes = hourKey === currentHour ? 
                     Math.max(1, now.getMinutes()) : 60;
                     
                 const avgPerMinute = totalCount > 0 ? (totalCount / minutes).toFixed(2) : "0.00";
                 
+                // Determine productivity status based on total clients
                 let status = '';
                 let statusClass = '';
                 
@@ -1352,22 +1443,23 @@
                 
                 const row = document.createElement('tr');
                 
+                // Populate row HTML based on the current mode
                 if (mode === 'medicina') {
                     row.innerHTML = `
                         <td class="hour-cell">${hourKey}</td>
-                        <td class="count-cell caja1-cell">${caja1Data.count}</td>
-                        <td class="count-cell caja2-cell">${caja2Data.count}</td>
-                        <td class="count-cell caja3-cell">${caja3Data.count}</td>
+                        <td class="count-cell caja1-cell">${cajaData.caja1.count}</td>
+                        <td class="count-cell caja2-cell">${cajaData.caja2.count}</td>
+                        <td class="count-cell caja3-cell">${cajaData.caja3.count}</td>
                         <td class="count-cell">${totalCount}</td>
                         <td>${avgPerMinute}</td>
                         <td><span class="status ${statusClass}">${status}</span></td>
                     `;
-                } else {
+                } else { // mode === 'autoservicio'
                     row.innerHTML = `
                         <td class="hour-cell">${hourKey}</td>
-                        <td class="count-cell caja4-cell">${caja4Data.count}</td>
-                        <td class="count-cell caja5-cell">${caja5Data.count}</td>
-                        <td class="count-cell caja6-cell">${caja6Data.count}</td>
+                        <td class="count-cell caja4-cell">${cajaData.caja4.count}</td>
+                        <td class="count-cell caja5-cell">${cajaData.caja5.count}</td>
+                        <td class="count-cell caja6-cell">${cajaData.caja6.count}</td>
                         <td class="count-cell">${totalCount}</td>
                         <td>${avgPerMinute}</td>
                         <td><span class="status ${statusClass}">${status}</span></td>
@@ -1378,91 +1470,110 @@
             });
         }
         
+        /**
+         * Renders the hour tags (selected hours) in the hour selector section.
+         */
         function renderHourTags() {
-            hourTags.innerHTML = '';
+            hourTags.innerHTML = ''; // Clear existing tags
             
             selectedHours.forEach(hour => {
                 const tag = document.createElement('div');
                 tag.className = 'hour-tag';
                 tag.innerHTML = `
                     <span>${hour}</span>
-                    <button class="delete-hour" data-hour="${hour}">
+                    <button class="delete-hour" data-hour="${hour}" aria-label="Eliminar hora ${hour}">
                         <i class="fas fa-times"></i>
                     </button>
                 `;
                 hourTags.appendChild(tag);
             });
             
+            // Add event listeners to newly created delete buttons
             document.querySelectorAll('.delete-hour').forEach(button => {
                 button.addEventListener('click', () => {
                     const hourToDelete = button.dataset.hour;
-                    selectedHours = selectedHours.filter(h => h !== hourToDelete);
-                    renderHourTags();
-                    renderHourTables();
-                    saveDataToLocalStorage();
+                    selectedHours = selectedHours.filter(h => h !== hourToDelete); // Remove hour
+                    renderHourTags(); // Re-render tags
+                    renderHourTables(); // Re-render tables
+                    saveDataToLocalStorage(); // Save changes
                     showNotification(`Hora ${hourToDelete} eliminada`, "success");
                 });
             });
         }
         
+        /**
+         * Saves the current application state (clientsData, totalClients, selectedHours, modes)
+         * to the browser's local storage.
+         */
         function saveDataToLocalStorage() {
-            const dataToSave = {
-                clientsData,
-                totalClients,
-                selectedHours,
-                currentMode,
-                currentTableMode
-            };
-            localStorage.setItem('clientsData', JSON.stringify(dataToSave));
+            try {
+                const dataToSave = {
+                    clientsData,
+                    totalClients,
+                    selectedHours,
+                    currentMode,
+                    currentTableMode
+                };
+                localStorage.setItem('clientsData', JSON.stringify(dataToSave));
+            } catch (e) {
+                console.error('Error saving data to local storage:', e);
+                showNotification("Error al guardar datos", "error");
+            }
         }
         
+        /**
+         * Loads previously saved application data from local storage.
+         */
         function loadSavedData() {
-            const savedData = localStorage.getItem('clientsData');
-            if (savedData) {
-                try {
+            try {
+                const savedData = localStorage.getItem('clientsData');
+                if (savedData) {
                     const parsedData = JSON.parse(savedData);
+                    // Restore clientsData, falling back to default if parsing fails or data is missing
                     clientsData = parsedData.clientsData || {
-                        medicina: {
-                            caja1: {},
-                            caja2: {},
-                            caja3: {}
-                        },
-                        autoservicio: {
-                            caja4: {},
-                            caja5: {},
-                            caja6: {}
-                        }
+                        medicina: { caja1: {}, caja2: {}, caja3: {} },
+                        autoservicio: { caja4: {}, caja5: {}, caja6: {} }
                     };
                     totalClients = parsedData.totalClients || 0;
                     selectedHours = parsedData.selectedHours || [];
                     
-                    if (parsedData.currentMode) {
-                        setMode(parsedData.currentMode);
-                    } else {
-                        setMode('medicina');
-                    }
+                    // Restore modes, falling back to 'medicina' if not found
+                    setMode(parsedData.currentMode || 'medicina');
+                    setTableMode(parsedData.currentTableMode || 'medicina');
                     
-                    if (parsedData.currentTableMode) {
-                        setTableMode(parsedData.currentTableMode);
-                    } else {
-                        setTableMode('medicina');
-                    }
-                    
+                    // Re-render UI based on loaded data
                     renderHourTags();
                     renderHourTables();
                     updateStats();
-                } catch (e) {
-                    console.error('Error loading saved data:', e);
+                } else {
+                    // Initialize with default modes if no saved data
+                    setMode('medicina');
+                    setTableMode('medicina');
                 }
-            } else {
+            } catch (e) {
+                console.error('Error loading saved data:', e);
+                showNotification("Error al cargar datos guardados", "error");
+                // If loading fails, ensure default state is set
+                clientsData = {
+                    medicina: { caja1: {}, caja2: {}, caja3: {} },
+                    autoservicio: { caja4: {}, caja5: {}, caja6: {} }
+                };
+                totalClients = 0;
+                selectedHours = [];
                 setMode('medicina');
                 setTableMode('medicina');
+                renderHourTags();
+                renderHourTables();
+                updateStats();
             }
         }
         
+        /**
+         * Loads the user's theme preference from local storage and applies it.
+         */
         function loadThemePreference() {
             const savedTheme = localStorage.getItem('theme');
-            isDarkTheme = savedTheme !== 'light';
+            isDarkTheme = savedTheme !== 'light'; // Default to dark if no preference or 'dark'
             
             if (!isDarkTheme) {
                 document.body.classList.add('light-theme');
@@ -1470,15 +1581,21 @@
             }
         }
         
+        /**
+         * Displays a temporary notification message.
+         * @param {string} message - The message to display.
+         * @param {string} type - The type of notification ('success' or 'error').
+         */
         function showNotification(message, type = "success") {
             notification.textContent = message;
-            notification.className = "notification show";
+            notification.className = "notification show"; // Show notification
             if (type === "error") {
                 notification.classList.add("error");
             } else {
                 notification.classList.remove("error");
             }
             
+            // Hide notification after 3 seconds
             setTimeout(() => {
                 notification.classList.remove("show");
             }, 3000);
