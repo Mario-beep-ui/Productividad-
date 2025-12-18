@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Cajero - Farmacia Guadalajara</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container" id="appContainer">
+        <header>
+            <div class="logo">
+                <i class="fas fa-cash-register"></i>
+                <div>
+                    <h1>Sistema de Cajeros</h1>
+                    <p class="user-info" id="userInfo">Cargando...</p>
+                </div>
+            </div>
+            <div class="header-controls">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> Salir
+                </button>
+            </div>
+        </header>
+        
+        <div class="dashboard">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Estadísticas de Hoy</h2>
+                    <div class="sucursal-info" id="sucursalInfo">
+                        <i class="fas fa-store"></i>
+                        <span>Sucursal: <span id="currentSucursal">-</span></span>
+                    </div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalClients">0</div>
+                        <div class="stat-label">Clientes Totales</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="currentHourClients">0</div>
+                        <div class="stat-label">Esta Hora</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="myClients">0</div>
+                        <div class="stat-label">Mis Clientes</div>
+                    </div>
+                </div>
+                
+                <div class="hour-selector">
+                    <div class="hour-selector-title">
+                        <h3>Horas Activas</h3>
+                        <p>Horas disponibles para registro</p>
+                    </div>
+                    <div class="hour-tags" id="hourTags">
+                        <!-- Las horas se cargarán dinámicamente -->
+                    </div>
+                    <div class="current-time">
+                        <i class="fas fa-clock"></i>
+                        Hora actual: <span id="currentTime">--:--</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Registro de Clientes</h2>
+                    <div class="mode-switcher">
+                        <button class="mode-btn active" id="medicineModeBtn">
+                            <i class="fas fa-pills"></i> Medicina
+                        </button>
+                        <button class="mode-btn" id="selfServiceModeBtn">
+                            <i class="fas fa-shopping-cart"></i> Autoservicio
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="cajas-container" id="medicineCajas">
+                    <button class="caja-btn" id="caja1Btn">
+                        <i class="fas fa-user-plus btn-icon"></i>
+                        <span class="btn-text">Caja 1</span>
+                        <span class="caja-counter" id="caja1Counter">0</span>
+                    </button>
+                    <button class="caja-btn caja2" id="caja2Btn">
+                        <i class="fas fa-user-plus btn-icon"></i>
+                        <span class="btn-text">Caja 2</span>
+                        <span class="caja-counter" id="caja2Counter">0</span>
+                    </button>
+                    <button class="caja-btn caja3" id="caja3Btn">
+                        <i class="fas fa-user-plus btn-icon"></i>
+                        <span class="btn-text">Caja 3</span>
+                        <span class="caja-counter" id="caja3Counter">0</span>
+                    </button>
+                </div>
+                
+                <div class="cajas-container" id="selfServiceCajas" style="display:none">
+                    <button class="caja-btn caja4" id="caja4Btn">
+                        <i class="fas fa-user-plus btn-icon"></i>
+                        <span class="btn-text">Caja 4</span>
+                        <span class="caja-counter" id="caja4Counter">0</span>
+                    </button>
+                    <button class="caja-btn caja5" id="caja5Btn">
+                        <i class="fas fa-user-plus btn-icon"></i>
+                        <span class="btn-text">Caja 5</span>
+                        <span class="caja-counter" id="caja5Counter">0</span>
+                    </button>
+                    <button class="caja-btn caja6" id="caja6Btn">
+                        <i class="fas fa-user-plus btn-icon"></i>
+                        <span class="btn-text">Caja 6</span>
+                        <span class="caja-counter" id="caja6Counter">0</span>
+                    </button>
+                </div>
+                
+                <div class="last-client">
+                    <p><i class="fas fa-history"></i> Último cliente registrado: <span id="lastClientTime">--:--</span></p>
+                </div>
+                
+                <div class="actions">
+                    <button class="action-btn sync-btn" id="syncStatus">
+                        <i class="fas fa-sync"></i>
+                        <span>Sincronizado</span>
+                    </button>
+                    <button class="action-btn help-btn" id="helpBtn">
+                        <i class="fas fa-question-circle"></i>
+                        Ayuda
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Mi Productividad</h2>
+                <div class="time-filter">
+                    <select id="timeFilter">
+                        <option value="today">Hoy</option>
+                        <option value="hour">Última Hora</option>
+                        <option value="shift">Mi Turno</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Hora</th>
+                            <th>Caja 1</th>
+                            <th>Caja 2</th>
+                            <th>Caja 3</th>
+                            <th>Caja 4</th>
+                            <th>Caja 5</th>
+                            <th>Caja 6</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productivityTable">
+                        <tr>
+                            <td colspan="8" style="text-align: center; padding: 30px;">
+                                Registra clientes para ver tu productividad
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Sistema de productividad para cajeros • Farmacia Guadalajara &copy; 2025</p>
+            <p class="version-info">Versión 3.0 • Conectado: <span id="connectionStatus">●</span></p>
+        </div>
+    </div>
+
+    <!-- Modal de Ayuda -->
+    <div class="modal-overlay" id="helpModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Instrucciones de Uso</h2>
+                <button class="close-modal" id="closeHelpModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="instructions-content">
+                <div class="instruction-step">
+                    <div class="step-number">1</div>
+                    <div class="step-text">
+                        <div class="step-title">Selecciona el Área</div>
+                        <div class="step-description">Usa los botones "Medicina" o "Autoservicio" para cambiar entre áreas.</div>
+                    </div>
+                </div>
+                <div class="instruction-step">
+                    <div class="step-number">2</div>
+                    <div class="step-text">
+                        <div class="step-title">Registra Clientes</div>
+                        <div class="step-description">Cada vez que atiendas a un cliente, presiona el botón de la caja correspondiente.</div>
+                    </div>
+                </div>
+                <div class="instruction-step">
+                    <div class="step-number">3</div>
+                    <div class="step-text">
+                        <div class="step-title">Monitorea tu Progreso</div>
+                        <div class="step-description">Revisa tus estadísticas en tiempo real en la tabla de productividad.</div>
+                    </div>
+                </div>
+                <div class="instruction-step">
+                    <div class="step-number">4</div>
+                    <div class="step-text">
+                        <div class="step-title">Sincronización Automática</div>
+                        <div class="step-description">Los datos se guardan automáticamente en la nube.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <p>Los administradores pueden ver estos datos en tiempo real desde su panel.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <!-- Firebase y scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/cajero.js"></script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Colección de sucursales
+    match /sucursales/{sucursalId} {
+      allow read: if request.auth != null;
+      allow write: if false; // Solo escritura desde backend/admin
+      
+      // Subcolección de días
+      match /dias/{dia} {
+        allow read: if request.auth != null;
+        
+        // Cajeros pueden escribir solo en su sucursal
+        allow write: if 
+          request.auth != null &&
+          (
+            // Admin puede escribir
+            get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.rol == "admin" ||
+            // Cajero puede escribir solo en su sucursal
+            (
+              get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.rol == "cajero" &&
+              get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.sucursalId == sucursalId
+            )
+          );
+      }
+      
+      // Subcolección de horas (logs detallados)
+      match /horas/{hora} {
+        allow read: if request.auth != null;
+        allow write: if 
+          request.auth != null &&
+          get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.rol == "cajero" &&
+          get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.sucursalId == sucursalId;
+          
+        match /registros/{registro} {
+          allow read: if request.auth != null;
+          allow write: if 
+            request.auth != null &&
+            get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.rol == "cajero" &&
+            get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.sucursalId == sucursalId;
+        }
+      }
+    }
+    
+    // Colección de usuarios
+    match /usuarios/{userId} {
+      allow read: if request.auth != null;
+      allow write: if 
+        request.auth != null &&
+        get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.rol == "admin";
+      
+      // Usuarios pueden leer sus propios datos
+      allow read: if request.auth.uid == userId;
+    }
+    
+    // Colección de configuraciones
+    match /configuraciones/{docId} {
+      allow read: if request.auth != null;
+      allow write: if 
+        request.auth != null &&
+        get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.rol == "admin";
+    }
+  }
+}

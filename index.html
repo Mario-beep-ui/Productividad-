@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmacia Guadalajara - Login</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="login-body">
+    <div class="login-container">
+        <div class="login-header">
+            <i class="fas fa-cash-register"></i>
+            <h1>Sistema de Productividad</h1>
+            <p class="subtitle">Farmacia Guadalajara</p>
+            <p class="version">Versión 3.0 - Multiusuario</p>
+        </div>
+        
+        <div class="login-card">
+            <h2>Iniciar Sesión</h2>
+            <p class="login-instructions">Ingresa tus credenciales para acceder al sistema</p>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="sucursal">
+                        <i class="fas fa-store"></i> Número de Sucursal
+                    </label>
+                    <input type="text" id="sucursal" placeholder="Ej: 001" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="empleado">
+                        <i class="fas fa-id-badge"></i> Número de Empleado
+                    </label>
+                    <input type="text" id="empleado" placeholder="Ej: 12345" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">
+                        <i class="fas fa-lock"></i> Contraseña
+                    </label>
+                    <input type="password" id="password" placeholder="Ingresa tu contraseña" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="role">
+                        <i class="fas fa-user-tag"></i> Tipo de Usuario
+                    </label>
+                    <select id="role" required>
+                        <option value="">Selecciona tu rol</option>
+                        <option value="cajero">Cajero / Mostrador</option>
+                        <option value="admin">Administrador</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="login-btn" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                </button>
+            </form>
+            
+            <div class="login-footer">
+                <p><i class="fas fa-info-circle"></i> Usuarios de prueba:</p>
+                <div class="demo-credentials">
+                    <div class="demo-card">
+                        <strong>Cajero:</strong><br>
+                        Sucursal: <code>sucursal_1</code><br>
+                        Empleado: <code>empleado_001</code><br>
+                        Contraseña: <code>password123</code>
+                    </div>
+                    <div class="demo-card">
+                        <strong>Administrador:</strong><br>
+                        Sucursal: <code>admin</code><br>
+                        Empleado: <code>admin</code><br>
+                        Contraseña: <code>admin123</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="system-info">
+            <p><i class="fas fa-shield-alt"></i> Sistema seguro • Actualización en tiempo real</p>
+            <p class="copyright">Farmacia Guadalajara &copy; 2025 • Sistema de Productividad v3.0</p>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById('loginForm');
+            const notification = document.getElementById('notification');
+            
+            function showNotification(message, type = 'success') {
+                notification.textContent = message;
+                notification.className = `notification show ${type}`;
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+            
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const sucursal = document.getElementById('sucursal').value.trim();
+                const empleado = document.getElementById('empleado').value.trim();
+                const password = document.getElementById('password').value;
+                const role = document.getElementById('role').value;
+                
+                if (!sucursal || !empleado || !password || !role) {
+                    showNotification('Por favor, completa todos los campos', 'error');
+                    return;
+                }
+                
+                const loginBtn = document.getElementById('loginBtn');
+                loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
+                loginBtn.disabled = true;
+                
+                try {
+                    const success = await loginUser(sucursal, empleado, password, role);
+                    
+                    if (success) {
+                        showNotification('¡Inicio de sesión exitoso!', 'success');
+                        setTimeout(() => {
+                            if (role === 'cajero') {
+                                window.location.href = 'cajero.html';
+                            } else {
+                                window.location.href = 'admin.html';
+                            }
+                        }, 1000);
+                    } else {
+                        showNotification('Credenciales incorrectas o usuario no autorizado', 'error');
+                        loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Iniciar Sesión';
+                        loginBtn.disabled = false;
+                    }
+                } catch (error) {
+                    console.error('Login error:', error);
+                    showNotification('Error en el sistema. Intenta nuevamente.', 'error');
+                    loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Iniciar Sesión';
+                    loginBtn.disabled = false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin - Farmacia Guadalajara</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container" id="appContainer">
+        <header>
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <div>
+                    <h1>Panel de Administración</h1>
+                    <p class="user-info">Monitor en Tiempo Real • <span id="lastUpdate">--:--</span></p>
+                </div>
+            </div>
+            <div class="header-controls">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="admin-controls">
+                    <select id="sucursalSelector">
+                        <option value="">Todas las sucursales</option>
+                    </select>
+                    <button class="logout-btn" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Salir
+                    </button>
+                </div>
+            </div>
+        </header>
+        
+        <div class="dashboard">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Resumen General</h2>
+                    <div class="time-range">
+                        <select id="timeRange">
+                            <option value="today">Hoy</option>
+                            <option value="week">Esta Semana</option>
+                            <option value="month">Este Mes</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalClientsAll">0</div>
+                        <div class="stat-label">Total Clientes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="activeSucursales">0</div>
+                        <div class="stat-label">Sucursales Activas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="peakHour">--:--</div>
+                        <div class="stat-label">Hora Pico</div>
+                    </div>
+                </div>
+                
+                <div class="alerts-container">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Alertas de Desbalance</h3>
+                    <div class="alerts-list" id="alertsList">
+                        <!-- Las alertas se cargarán dinámicamente -->
+                        <div class="no-alerts">
+                            <i class="fas fa-check-circle"></i>
+                            <p>No hay alertas activas</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Distribución por Área</h2>
+                    <div class="area-switcher">
+                        <button class="area-btn active" id="medicineAreaBtn">
+                            <i class="fas fa-pills"></i> Medicina
+                        </button>
+                        <button class="area-btn" id="selfServiceAreaBtn">
+                            <i class="fas fa-shopping-cart"></i> Autoservicio
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="areaChart"></canvas>
+                </div>
+                
+                <div class="chart-info">
+                    <div class="chart-stat">
+                        <span class="stat-label">Total Área:</span>
+                        <span class="stat-value" id="totalAreaClients">0</span>
+                    </div>
+                    <div class="chart-stat">
+                        <span class="stat-label">Promedio/Caja:</span>
+                        <span class="stat-value" id="averagePerCaja">0</span>
+                    </div>
+                    <div class="chart-stat">
+                        <span class="stat-label">Estado:</span>
+                        <span class="status balanced" id="areaStatus">Balanceado</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Detalle por Sucursal</h2>
+                <div class="refresh-controls">
+                    <button class="refresh-btn" id="refreshData">
+                        <i class="fas fa-sync"></i> Actualizar
+                    </button>
+                    <span class="auto-refresh">
+                        <i class="fas fa-clock"></i>
+                        Auto-refresh: <span id="refreshTimer">30s</span>
+                    </span>
+                </div>
+            </div>
+            
+            <div class="sucursales-grid" id="sucursalesGrid">
+                <!-- Las tarjetas de sucursal se cargarán dinámicamente -->
+                <div class="loading-sucursales">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Cargando datos de sucursales...</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Registro en Tiempo Real</h2>
+                <div class="live-indicator">
+                    <span class="live-dot"></span>
+                    EN VIVO
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sucursal</th>
+                            <th>Hora</th>
+                            <th>Área</th>
+                            <th>Caja</th>
+                            <th>Empleado</th>
+                            <th>Acción</th>
+                            <th>Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody id="liveLogTable">
+                        <!-- Los registros en vivo se cargarán dinámicamente -->
+                        <tr>
+                            <td colspan="7" style="text-align: center; padding: 30px;">
+                                Esperando actividad...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Panel de Administración • Farmacia Guadalajara &copy; 2025</p>
+            <p class="version-info">Versión 3.0 • <span id="connectionCount">0</span> conexiones activas</p>
+        </div>
+    </div>
+
+    <!-- Modal de Detalle de Sucursal -->
+    <div class="modal-overlay" id="sucursalDetailModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalSucursalTitle">Detalle de Sucursal</h2>
+                <button class="close-modal" id="closeDetailModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="sucursal-stats">
+                    <div class="stat-row">
+                        <span>Clientes Totales:</span>
+                        <span id="modalTotalClients">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Última Actualización:</span>
+                        <span id="modalLastUpdate">--:--</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Cajeros Activos:</span>
+                        <span id="modalActiveCajeros">0</span>
+                    </div>
+                </div>
+                
+                <div class="modal-charts">
+                    <div class="chart-container-small">
+                        <canvas id="modalAreaChart"></canvas>
+                    </div>
+                    <div class="chart-container-small">
+                        <canvas id="modalHourChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="modal-table-container">
+                    <h3>Detalle por Caja</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Caja</th>
+                                <th>Medicina</th>
+                                <th>Autoservicio</th>
+                                <th>Total</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="modalCajasTable">
+                            <!-- Los datos se cargarán dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="action-btn" id="exportSucursalData">
+                    <i class="fas fa-file-export"></i> Exportar Datos
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <!-- Firebase y scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>
