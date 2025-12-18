@@ -2,12 +2,13 @@
 // Reemplaza estos valores con los de tu proyecto Firebase
 
 const firebaseConfig = {
-    apiKey: "TU_API_KEY",
-    authDomain: "TU_PROYECTO.firebaseapp.com",
-    projectId: "TU_PROYECTO_ID",
-    storageBucket: "TU_PROYECTO.appspot.com",
-    messagingSenderId: "TU_SENDER_ID",
-    appId: "TU_APP_ID"
+    apiKey: "AIzaSyCpwzsIBN4Y-yWckLw3gZocWV49wA9h-Qs",
+    authDomain: "productividad-farmacia.firebaseapp.com",
+    projectId: "productividad-farmacia",
+    storageBucket: "productividad-farmacia.firebasestorage.app",
+    messagingSenderId: "623412846154",
+    appId: "1:623412846154:web:17cb63f9787629fd1fd0b3",
+    measurementId: "G-Y0QC0TY7M8" // Esta línea es opcional, puedes quitarla si quieres
 };
 
 // Inicializar Firebase
@@ -23,7 +24,7 @@ db.settings({
     merge: true
 });
 
-// Variables globales
+// Variables globales (se llenarán cuando el usuario inicie sesión)
 let currentUser = null;
 let currentUserData = null;
 
@@ -82,7 +83,7 @@ function generateSucursalId(sucursalNumber) {
     return `sucursal_${sucursalNumber}`;
 }
 
-// Exportar funciones y variables
+// Exportar funciones y variables para usar en otros archivos
 window.firebaseConfig = {
     auth,
     db,
